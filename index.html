@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scarlett Michanco — AI Agents &amp; Spatial Computing</title>
+<meta name="description" content="Custom AI agents and AR/VR builds from an Innovation Engineer with 15+ years shipping production Generative AI and spatial computing systems for LexisNexis, Wayfair, and more.">
+
+<!-- Fonts: Space Grotesk (display), Inter (body), IBM Plex Mono (data/labels) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+
+<style>
+  :root{
+    --bg:#0A0D12;
+    --bg-panel:#10141B;
+    --bg-panel-2:#151B24;
+    --line:#232A36;
+    --line-soft:#1A2029;
+    --text:#EDEFF3;
+    --text-muted:#8D96A6;
+    --text-faint:#75808F;
+    --cyan:#45E0D3;
+    --cyan-soft:rgba(69,224,211,.14);
+    --amber:#F2A93B;
+    --amber-soft:rgba(242,169,59,.14);
+    --radius:10px;
+    --maxw:1120px;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* background scan-grid texture */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,.045) 1px, transparent 0);
+    background-size:34px 34px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+
+  .skip-link{
+    position:absolute; left:-999px; top:auto;
+    background:var(--cyan); color:#031513; padding:.75rem 1.25rem;
+    font-family:var(--mono); font-size:.85rem; z-index:1000; border-radius:6px;
+  }
+  .skip-link:focus{ left:1rem; top:1rem; }
+
+  :focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 24px;
+    position:relative;
+    z-index:1;
+  }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.78rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px; height:7px;
+    background:var(--cyan);
+    border-radius:50%;
+    box-shadow:0 0 0 4px var(--cyan-soft);
+  }
+
+  h1,h2,h3{
+    font-family:var(--display);
+    font-weight:600;
+    letter-spacing:-.01em;
+    margin:0;
+  }
+
+  .section-tag{
+    font-family:var(--mono);
+    font-size:.75rem;
+    color:var(--text-faint);
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,13,18,.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0;
+  }
+  .logo{
+    font-family:var(--mono);
+    font-size:.85rem;
+    letter-spacing:.06em;
+    text-decoration:none;
+    display:flex; flex-direction:column; line-height:1.2;
+  }
+  .logo strong{font-family:var(--display); font-size:1rem; color:var(--text); font-weight:600;}
+  .logo span{color:var(--text-faint); font-size:.7rem;}
+
+  .nav-links{
+    display:flex; gap:2rem; list-style:none; margin:0; padding:0;
+    font-size:.92rem;
+  }
+  .nav-links a{
+    text-decoration:none; color:var(--text-muted);
+    transition:color .15s ease;
+  }
+  .nav-links a:hover{color:var(--text);}
+
+  .btn{
+    font-family:var(--body);
+    font-weight:600;
+    font-size:.92rem;
+    border:none;
+    border-radius:7px;
+    padding:.75rem 1.3rem;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-primary{
+    background:var(--cyan);
+    color:#04211D;
+  }
+  .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 8px 24px -8px rgba(69,224,211,.55); }
+  .btn-ghost{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{ border-color:var(--text-muted); }
+
+  .nav-cta{display:flex; align-items:center; gap:1.2rem;}
+
+  .menu-toggle{
+    display:none;
+    background:none; border:1px solid var(--line); border-radius:6px;
+    color:var(--text); width:40px; height:40px; cursor:pointer;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:88px 0 80px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:40px;
+    align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(2.2rem, 4.4vw, 3.4rem);
+    line-height:1.08;
+    margin:1rem 0 1.25rem;
+  }
+  .hero h1 em{
+    font-style:normal;
+    background:linear-gradient(90deg, var(--cyan), var(--amber));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.lead{
+    font-size:1.08rem;
+    color:var(--text-muted);
+    max-width:46ch;
+    margin:0 0 2rem;
+  }
+  .hero-ctas{display:flex; gap:1rem; flex-wrap:wrap;}
+
+  .hero-visual{ position:relative; }
+  .hero-visual svg{ width:100%; height:auto; }
+
+  .node{ transition:opacity .4s ease; }
+  .anim .node-cyan{ animation:pulse 3.2s ease-in-out infinite; }
+  .anim .node-amber{ animation:pulse 3.2s ease-in-out infinite; }
+  .anim .edge{
+    stroke-dasharray:6 5;
+    animation:dash 22s linear infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:.55; }
+    50%{ opacity:1; }
+  }
+  @keyframes dash{
+    to{ stroke-dashoffset:-400; }
+  }
+
+  /* ---------- Proof bar ---------- */
+  .proofbar{
+    border-top:1px solid var(--line-soft);
+    border-bottom:1px solid var(--line-soft);
+    padding:22px 0;
+  }
+  .proofbar-inner{
+    display:flex; flex-wrap:wrap; gap:1.2rem 2.4rem;
+    align-items:center; justify-content:space-between;
+  }
+  .proof-label{ font-family:var(--mono); font-size:.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.1em; white-space:nowrap;}
+  .proof-items{ display:flex; flex-wrap:wrap; gap:1.6rem 2.2rem; }
+  .proof-item{
+    font-family:var(--mono);
+    font-size:.85rem;
+    color:var(--text-muted);
+    display:flex; align-items:center; gap:.5rem;
+  }
+  .proof-item::before{ content:"◆"; color:var(--amber); font-size:.6rem; }
+
+  /* ---------- Sections generic ---------- */
+  section{ padding:96px 0; position:relative; z-index:1; }
+  .section-head{ max-width:640px; margin-bottom:3rem; }
+  .section-head h2{ font-size:clamp(1.6rem, 2.6vw, 2.2rem); margin:.6rem 0 .8rem; }
+  .section-head p{ color:var(--text-muted); font-size:1.02rem; margin:0; }
+
+  /* ---------- Services ---------- */
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1.5rem;
+  }
+  .service-card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.9rem 1.7rem;
+    display:flex; flex-direction:column;
+  }
+  .service-card .num{
+    font-family:var(--mono); font-size:.78rem; color:var(--text-faint);
+  }
+  .service-card h3{ font-size:1.2rem; margin:.9rem 0 .6rem; }
+  .service-card p.desc{ color:var(--text-muted); font-size:.95rem; margin:0 0 1.1rem; }
+  .service-card ul{ list-style:none; margin:0 0 1.3rem; padding:0; display:flex; flex-direction:column; gap:.55rem; }
+  .service-card li{
+    font-size:.88rem; color:var(--text-muted);
+    padding-left:1.2rem; position:relative;
+  }
+  .service-card li::before{
+    content:"→"; position:absolute; left:0; color:var(--cyan);
+  }
+  .service-card .for{
+    margin-top:auto;
+    font-family:var(--mono); font-size:.76rem; color:var(--text-faint);
+    border-top:1px solid var(--line-soft); padding-top:1rem;
+  }
+
+  /* ---------- Work / case notes ---------- */
+  .work-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1.2rem;
+  }
+  .work-card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.6rem 1.7rem;
+  }
+  .work-card .meta{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:var(--mono); font-size:.72rem; color:var(--text-faint);
+    margin-bottom:.7rem; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .work-card h3{ font-size:1.08rem; margin:0 0 .5rem; }
+  .work-card p{ color:var(--text-muted); font-size:.92rem; margin:0 0 1rem; }
+  .work-card .stack{
+    font-family:var(--mono); font-size:.74rem; color:var(--cyan);
+    line-height:1.6;
+  }
+  .work-card .stat{
+    font-family:var(--display); font-weight:600; color:var(--amber);
+  }
+
+  /* ---------- Process ---------- */
+  .process-list{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1.2rem;
+  }
+  .process-item{ position:relative; padding-top:1rem; border-top:2px solid var(--line); }
+  .process-item .idx{
+    font-family:var(--mono); color:var(--cyan); font-size:.85rem;
+  }
+  .process-item h3{ font-size:1.05rem; margin:.7rem 0 .5rem; }
+  .process-item p{ color:var(--text-muted); font-size:.9rem; margin:0; }
+
+  /* ---------- Stack strip ---------- */
+  .stack-strip{
+    display:flex; flex-wrap:wrap; gap:.6rem;
+  }
+  .chip{
+    font-family:var(--mono); font-size:.78rem;
+    border:1px solid var(--line); border-radius:999px;
+    padding:.4rem .95rem; color:var(--text-muted);
+  }
+
+  /* ---------- Contact ---------- */
+  .contact-section{
+    background:var(--bg-panel);
+    border-top:1px solid var(--line-soft);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .contact-grid{
+    display:grid;
+    grid-template-columns:.85fr 1.15fr;
+    gap:3rem;
+    align-items:start;
+  }
+  .contact-info h2{ font-size:clamp(1.6rem,2.6vw,2.1rem); margin:.6rem 0 1rem; }
+  .contact-info p{ color:var(--text-muted); margin:0 0 1.6rem; max-width:40ch; }
+  .direct-contact{ display:flex; flex-direction:column; gap:.6rem; }
+  .direct-contact a{
+    font-family:var(--mono); font-size:.92rem; text-decoration:none; color:var(--text);
+    border-bottom:1px dashed var(--line);
+    width:fit-content; padding-bottom:2px;
+  }
+  .direct-contact a:hover{ color:var(--cyan); border-color:var(--cyan); }
+
+  form{ display:flex; flex-direction:column; gap:1.1rem; }
+  .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:1.1rem; }
+  label{
+    font-family:var(--mono); font-size:.75rem; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:.06em;
+    margin-bottom:.45rem; display:block;
+  }
+  input, select, textarea{
+    width:100%;
+    background:var(--bg-panel-2);
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:.75rem .9rem;
+    color:var(--text);
+    font-family:var(--body);
+    font-size:.94rem;
+  }
+  input:focus, select:focus, textarea:focus{ border-color:var(--cyan); }
+  textarea{ resize:vertical; min-height:120px; }
+  .hp-field{ position:absolute; left:-9999px; opacity:0; }
+
+  .form-status{
+    font-family:var(--mono); font-size:.85rem; min-height:1.2em;
+  }
+  .form-status.success{ color:var(--cyan); }
+  .form-status.error{ color:var(--amber); }
+
+  /* ---------- Footer ---------- */
+  footer{ padding:2.6rem 0; }
+  .footer-inner{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+  }
+  .footer-inner p{ margin:0; color:var(--text-faint); font-size:.85rem; font-family:var(--mono); }
+  .footer-links{ display:flex; gap:1.4rem; }
+  .footer-links a{ color:var(--text-faint); text-decoration:none; font-size:.85rem; font-family:var(--mono); }
+  .footer-links a:hover{ color:var(--cyan); }
+
+  /* ---------- reveal ---------- */
+  /* Visible by default. Only hidden-then-revealed when the 'js' class confirms
+     JS actually ran, so a slow/blocked script never leaves content invisible. */
+  [data-reveal]{ opacity:1; transform:none; }
+  html.js [data-reveal]{ opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease; }
+  html.js [data-reveal].is-visible{ opacity:1; transform:translateY(0); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 880px){
+    .nav-links{ display:none; }
+    .menu-toggle{ display:block; }
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-visual{ order:-1; max-width:340px; margin:0 auto 1rem; }
+    .services-grid{ grid-template-columns:1fr; }
+    .work-grid{ grid-template-columns:1fr; }
+    .process-list{ grid-template-columns:1fr 1fr; }
+    .contact-grid{ grid-template-columns:1fr; }
+    .form-row{ grid-template-columns:1fr; }
+    .proofbar-inner{ justify-content:flex-start; }
+  }
+  @media (max-width:520px){
+    .process-list{ grid-template-columns:1fr; }
+    section{ padding:64px 0; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo">
+      <strong>SCARLETT MICHANCO</strong>
+      <span>AI ARCHITECT · SPATIAL COMPUTING</span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-primary">Start a project</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ---------------- HERO ---------------- -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">15+ yrs · AI agents · AR / VR</p>
+        <h1>I build AI agents that <em>actually ship</em> to production.</h1>
+        <p class="lead">Fifteen years architecting generative AI, knowledge graphs, and spatial computing for teams like LexisNexis and Wayfair. Now taking on a limited number of AI agent and AR/VR builds for teams who need one shipped, not scoped.</p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn btn-primary">Start a project →</a>
+          <a href="#work" class="btn btn-ghost">See selected work</a>
+        </div>
+      </div>
+
+      <div class="hero-visual anim" aria-hidden="true">
+        <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bridge" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#45E0D3"/>
+              <stop offset="1" stop-color="#F2A93B"/>
+            </linearGradient>
+          </defs>
+          <g stroke-width="1" fill="none" opacity="0.8">
+            <line class="edge" x1="80" y1="120" x2="180" y2="90" stroke="#2C4A48"/>
+            <line class="edge" x1="180" y1="90" x2="260" y2="150" stroke="#2C4A48"/>
+            <line class="edge" x1="80" y1="120" x2="110" y2="220" stroke="#2C4A48"/>
+            <line class="edge" x1="110" y1="220" x2="200" y2="260" stroke="#2C4A48"/>
+            <line class="edge" x1="260" y1="150" x2="200" y2="260" stroke="url(#bridge)"/>
+            <line class="edge" x1="260" y1="150" x2="360" y2="140" stroke="url(#bridge)"/>
+            <line class="edge" x1="200" y1="260" x2="300" y2="320" stroke="url(#bridge)"/>
+            <line class="edge" x1="360" y1="140" x2="440" y2="180" stroke="#5A4326"/>
+            <line class="edge" x1="360" y1="140" x2="420" y2="90" stroke="#5A4326"/>
+            <line class="edge" x1="300" y1="320" x2="400" y2="340" stroke="#5A4326"/>
+            <line class="edge" x1="400" y1="340" x2="440" y2="180" stroke="#5A4326"/>
+            <line class="edge" x1="300" y1="320" x2="230" y2="390" stroke="#2C4A48"/>
+            <line class="edge" x1="110" y1="220" x2="60" y2="310" stroke="#2C4A48"/>
+            <line class="edge" x1="60" y1="310" x2="230" y2="390" stroke="#2C4A48"/>
+            <line class="edge" x1="440" y1="180" x2="470" y2="270" stroke="#5A4326"/>
+            <line class="edge" x1="400" y1="340" x2="470" y2="270" stroke="#5A4326"/>
+          </g>
+          <g>
+            <circle class="node node-cyan" cx="80" cy="120" r="5" fill="#45E0D3"/>
+            <circle class="node node-cyan" cx="180" cy="90" r="4" fill="#45E0D3"/>
+            <circle class="node node-cyan" cx="110" cy="220" r="6" fill="#45E0D3"/>
+            <circle class="node node-cyan" cx="60" cy="310" r="4" fill="#45E0D3"/>
+            <circle class="node node-cyan" cx="200" cy="260" r="5" fill="#45E0D3"/>
+            <circle class="node node-cyan" cx="230" cy="390" r="4" fill="#45E0D3"/>
+
+            <circle class="node" cx="260" cy="150" r="7" fill="url(#bridge)"/>
+            <circle class="node" cx="300" cy="320" r="7" fill="url(#bridge)"/>
+
+            <circle class="node node-amber" cx="360" cy="140" r="5" fill="#F2A93B"/>
+            <circle class="node node-amber" cx="420" cy="90" r="4" fill="#F2A93B"/>
+            <circle class="node node-amber" cx="440" cy="180" r="6" fill="#F2A93B"/>
+            <circle class="node node-amber" cx="470" cy="270" r="4" fill="#F2A93B"/>
+            <circle class="node node-amber" cx="400" cy="340" r="5" fill="#F2A93B"/>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#5A6270">
+            <text x="20" y="450">SLAM · ARKit · Unity</text>
+            <text x="330" y="450">RAG · Agents · LLM</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- PROOF BAR ---------------- -->
+  <div class="proofbar">
+    <div class="wrap proofbar-inner">
+      <span class="proof-label">Recognized for</span>
+      <div class="proof-items">
+        <span class="proof-item">Featured in Forbes</span>
+        <span class="proof-item">Webby Award</span>
+        <span class="proof-item">CES Best Startup</span>
+        <span class="proof-item">Built for LexisNexis &amp; Wayfair</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- SERVICES ---------------- -->
+  <section id="services">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="section-tag">What I build</p>
+        <h2>Three ways to work together</h2>
+        <p>Pick the scope that matches where you're stuck — or just tell me the problem in the form below and I'll suggest one.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card" data-reveal>
+          <span class="num">01</span>
+          <h3>AI Agent Sprint</h3>
+          <p class="desc">A scoped, 2–4 week engagement to design and ship one production multi-agent workflow into the tools you already use.</p>
+          <ul>
+            <li>Discovery call, then a written success bar before any code</li>
+            <li>Working agent wired into Salesforce, Zendesk, Slack, or your stack</li>
+            <li>Handoff docs plus a 30-day support window</li>
+          </ul>
+          <p class="for">For teams who know the automation they want but need it actually built.</p>
+        </div>
+
+        <div class="service-card" data-reveal>
+          <span class="num">02</span>
+          <h3>Spatial Computing Build</h3>
+          <p class="desc">AR/VR features and computer-vision pipelines, from a SLAM prototype to a shipped mobile experience.</p>
+          <ul>
+            <li>Unity, Unreal, or native ARKit/ARCore builds</li>
+            <li>Real-time computer vision with OpenCV or Segment Anything</li>
+            <li>Performance-tuned for target hardware with TensorRT/ONNX</li>
+          </ul>
+          <p class="for">For product teams adding spatial features who want someone who's shipped it before.</p>
+        </div>
+
+        <div class="service-card" data-reveal>
+          <span class="num">03</span>
+          <h3>Fractional AI + XR Architect</h3>
+          <p class="desc">Ongoing technical leadership for teams building AI or spatial-computing products, without a full-time hire.</p>
+          <ul>
+            <li>Weekly architecture and code review</li>
+            <li>Team training on RAG, agentic workflows, or SLAM/CV fundamentals</li>
+            <li>A direct line for unblocking hard technical calls</li>
+          </ul>
+          <p class="for">For funded teams that need senior judgment before they need more headcount.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- SELECTED WORK ---------------- -->
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="section-tag">Selected work</p>
+        <h2>Systems that shipped, not slide decks</h2>
+        <p>A sample of recent engagements — enterprise AI orchestration, spatial commerce, and legal-tech knowledge graphs.</p>
+      </div>
+
+      <div class="work-grid">
+        <div class="work-card" data-reveal>
+          <div class="meta"><span>575 The Technologist</span><span>2025–2026</span></div>
+          <h3>Enterprise LLM orchestration</h3>
+          <p>Architected a multi-agent Generative AI framework with custom Zoom AI companions, automating customer workflows across Salesforce and Zendesk.</p>
+          <p class="stack">STACK: Node.js · Python · Multi-agent orchestration</p>
+        </div>
+
+        <div class="work-card" data-reveal>
+          <div class="meta"><span>Wayfair</span><span>2019–2022</span></div>
+          <h3>Spatial commerce &amp; AR perception</h3>
+          <p>Prototyped AR features using visual SLAM and real-time point-cloud mapping, driving an average <span class="stat">28%</span> increase in transaction value. Built and led the AR/VR/XR automation team.</p>
+          <p class="stack">STACK: Unity · WebGL/WebGPU · Visual SLAM</p>
+        </div>
+
+        <div class="work-card" data-reveal>
+          <div class="meta"><span>Vink Software</span><span>2024</span></div>
+          <h3>Patent-theft detection MVP</h3>
+          <p>Spearheaded an autonomous multi-agent platform using Neo4j Graph RAG to map entity relationships and citation networks for legal-tech.</p>
+          <p class="stack">STACK: Neo4j Graph RAG · Azure AI · Databricks</p>
+        </div>
+
+        <div class="work-card" data-reveal>
+          <div class="meta"><span>LexisNexis</span><span>2022–2024</span></div>
+          <h3>Computer vision for insurance claims</h3>
+          <p>Engineered CNN and transformer models for property-interior segmentation, a <span class="stat">50%</span> performance improvement, plus native 3D mapping for automated claims.</p>
+          <p class="stack">STACK: TensorFlow · Segment Anything · ARKit/ARCore</p>
+        </div>
+
+        <div class="work-card" data-reveal>
+          <div class="meta"><span>Modality</span><span>2025</span></div>
+          <h3>Serverless healthcare voice AI</h3>
+          <p>Designed an event-driven voice-transcription analysis platform and migrated legacy Postgres structures to high-throughput DynamoDB.</p>
+          <p class="stack">STACK: AWS Lambda · Step Functions · Realtime API</p>
+        </div>
+
+        <div class="work-card" data-reveal>
+          <div class="meta"><span>Treefort Music Festival</span><span>Forbes-featured</span></div>
+          <h3>Live festival AR activation</h3>
+          <p>Designed an interactive AR application using Wikitude SLAM tracking for fluid, real-time computer vision on mobile chipsets at a live event.</p>
+          <p class="stack">STACK: Wikitude SLAM · Ionic · Node.js</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- PROCESS ---------------- -->
+  <section id="process">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="section-tag">How it works</p>
+        <h2>Four steps, no black box</h2>
+        <p>The same process whether it's an agent, an AR feature, or a fractional engagement.</p>
+      </div>
+
+      <div class="process-list">
+        <div class="process-item" data-reveal>
+          <span class="idx">01</span>
+          <h3>Discovery call</h3>
+          <p>We talk through the workflow or feature you want built, and whether it's a fit — 30 minutes, no pitch deck.</p>
+        </div>
+        <div class="process-item" data-reveal>
+          <span class="idx">02</span>
+          <h3>Define the bar</h3>
+          <p>Before any code, we agree in writing on exactly what "done" looks like — a specific outcome, not a vague goal.</p>
+        </div>
+        <div class="process-item" data-reveal>
+          <span class="idx">03</span>
+          <h3>Build &amp; pressure-test</h3>
+          <p>I build against real data, test it hard, and flag trade-offs as they come up — not after the invoice.</p>
+        </div>
+        <div class="process-item" data-reveal>
+          <span class="idx">04</span>
+          <h3>Ship &amp; hand off</h3>
+          <p>You get a working system, documentation, and a support window — something your team can actually run.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- STACK ---------------- -->
+  <section id="stack" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head" data-reveal style="margin-bottom:1.6rem;">
+        <p class="section-tag">Toolkit</p>
+        <h2 style="font-size:1.3rem;">Tools I reach for</h2>
+      </div>
+      <div class="stack-strip" data-reveal>
+        <span class="chip">Claude</span>
+        <span class="chip">Llama 3.1</span>
+        <span class="chip">Gemini</span>
+        <span class="chip">RAG</span>
+        <span class="chip">Agentic Workflows</span>
+        <span class="chip">Neo4j Graph RAG</span>
+        <span class="chip">PyTorch</span>
+        <span class="chip">TensorFlow</span>
+        <span class="chip">Unity</span>
+        <span class="chip">Unreal Engine</span>
+        <span class="chip">ARKit / ARCore</span>
+        <span class="chip">SLAM</span>
+        <span class="chip">AWS · GCP · Azure</span>
+        <span class="chip">Kubernetes</span>
+        <span class="chip">Terraform</span>
+        <span class="chip">Python / FastAPI</span>
+        <span class="chip">React</span>
+        <span class="chip">Flutter</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- CONTACT ---------------- -->
+  <section class="contact-section" id="contact">
+    <div class="wrap contact-grid">
+      <div class="contact-info" data-reveal>
+        <p class="section-tag">Get in touch</p>
+        <h2>Have an automation you want built?</h2>
+        <p>Tell me what you're trying to automate or build. I reply within one business day, and if it's not a fit, I'll say so and point you somewhere better.</p>
+        <div class="direct-contact">
+          <a href="mailto:scarlett.michanco@gmail.com">scarlett.michanco@gmail.com</a>
+          <a href="tel:+16173759145">(617) 375-9145</a>
+          <a href="#">Boston, MA — open to remote engagements</a>
+        </div>
+      </div>
+
+      <div data-reveal>
+        <!--
+          SETUP: replace YOUR_FORM_ID below with your real Formspree form ID.
+          Create a free form at https://formspree.io — full steps are in README.md.
+        -->
+        <form id="contact-form" action="https://formspree.io/f/mdenebow" method="POST">
+          <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="form-row">
+            <div>
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required autocomplete="name">
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label for="company">Company <span style="text-transform:none;">(optional)</span></label>
+              <input type="text" id="company" name="company" autocomplete="organization">
+            </div>
+            <div>
+              <label for="project-type">Project type</label>
+              <select id="project-type" name="project_type">
+                <option>AI agent / automation</option>
+                <option>AR / VR / spatial computing</option>
+                <option>Fractional architect</option>
+                <option>Something else</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="message">What are you trying to build?</label>
+            <textarea id="message" name="message" required placeholder="The workflow, tool, or feature you want automated — and any deadline you're working against."></textarea>
+          </div>
+          <div style="display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-primary">Send message</button>
+            <span class="form-status" id="form-status" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <p>© 2026 Scarlett Michanco · Innovation Engineer &amp; AI Architect</p>
+    <div class="footer-links">
+      <a href="mailto:scarlett.michanco@gmail.com">Email</a>
+      <a href="#top">Back to top</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!expanded));
+      navLinks.style.display = expanded ? 'none' : 'flex';
+      navLinks.style.cssText += expanded ? '' : `
+        position:fixed; top:64px; left:0; right:0; background:#0A0D12;
+        flex-direction:column; padding:24px; border-bottom:1px solid #232A36; gap:1.2rem; z-index:99;
+      `;
+    });
+  }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  }
+
+  // Contact form — AJAX submit to Formspree
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('form-status');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (form.action.includes('YOUR_FORM_ID')) {
+        status.textContent = 'Form not connected yet — see README.md to add your Formspree ID.';
+        status.className = 'form-status error';
+        return;
+      }
+      status.textContent = 'Sending…';
+      status.className = 'form-status';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          form.reset();
+          status.textContent = "Sent — I'll reply within one business day.";
+          status.className = 'form-status success';
+        } else {
+          throw new Error('bad response');
+        }
+      } catch (err) {
+        status.textContent = 'Something went wrong — email scarlett.michanco@gmail.com directly instead.';
+        status.className = 'form-status error';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
